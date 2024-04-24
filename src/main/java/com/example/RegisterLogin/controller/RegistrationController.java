@@ -2,7 +2,7 @@ package com.example.RegisterLogin.controller;
 
 import com.example.RegisterLogin.Model.User;
 import com.example.RegisterLogin.Service.RegistrationService;
-import com.example.RegisterLogin.UserDao.UserDao;
+import com.example.RegisterLogin.UserDao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,31 +10,31 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("Users")
+@RequestMapping("/Users")
 public class RegistrationController {
     @Autowired
-    RegistrationService registerService;
-    public void RegistrationService(UserDao userDao) {
+    private RegistrationService registerService;
+    public void RegistrationService(UserRepository userDao) {
         this.userDao=userDao;
     }
     @RequestMapping("/")
             public String index(){
         return "index.html";
     }
-    UserDao userDao;
+    UserRepository userDao;
 
-    @GetMapping("allUsers") //fetch all the data
+    @GetMapping("/allUsers") //fetch all the data
     public List<User> getAllUsers(){
         return registerService.getAllUsers();
     }
 
-    @GetMapping("role/{role}")
+    @GetMapping("/role/{role}")
     public List<User> getUserbyRole(@PathVariable("role") String role){
         return registerService.getUserbyRole(role);
 
     }
 
-    @PostMapping("addUser")
+    @PostMapping("/addUser")
     public String addUser(@RequestBody User user){
         return registerService.addUser(user);
     }
