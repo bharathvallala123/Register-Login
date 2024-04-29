@@ -1,7 +1,8 @@
-package com.example.RegisterLogin.Service;
-import com.example.RegisterLogin.Model.User;
-import com.example.RegisterLogin.UserDao.UserRepository;
+package com.example.RegisterLogin.service;
+import com.example.RegisterLogin.model.User;
+import com.example.RegisterLogin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -11,16 +12,20 @@ public class RegistrationService {
  @Autowired
  private UserRepository userRepository;
 
+ @Autowired
+ private PasswordEncoder passwordEncoder;
+
     public List<User> getAllUsers() {
         return userRepository.findAll();// gives us list of users
     }
-    public List<User> getUserbyRole(String role){
-        return userRepository.findByRole(role);
+    public List<User> getUserbyRole(String roles){
+        return userRepository.findByRoles(roles);
     }
 
     public String addUser(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "User added successfully";
+        return "User added to system successfully";
     }
 
     public String updateUser(int id, User newUser) {
@@ -28,10 +33,10 @@ public class RegistrationService {
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
             existingUser.setName(newUser.getName());
-            existingUser.setLastname(newUser.getLastname());
             existingUser.setEmail(newUser.getEmail());
+            existingUser.setPassword(newUser.getPassword());
             existingUser.setPhone(newUser.getPhone());
-            existingUser.setRole(newUser.getRole());
+            existingUser.setRoles(newUser.getRoles());
             userRepository.save(existingUser);
             return "User updated successfully";
         }

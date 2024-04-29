@@ -1,8 +1,7 @@
 package com.example.RegisterLogin.controller;
 
-import com.example.RegisterLogin.Model.User;
-import com.example.RegisterLogin.Service.RegistrationService;
-import com.example.RegisterLogin.UserDao.UserRepository;
+import com.example.RegisterLogin.model.User;
+import com.example.RegisterLogin.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +13,6 @@ import java.util.List;
 public class RegistrationController {
     @Autowired
     private RegistrationService registerService;
-    public void RegistrationService(UserRepository userDao) {
-        this.userDao=userDao;
-    }
-    @RequestMapping("/")
-            public String index(){
-        return "index.html";
-    }
-    UserRepository userDao;
 
     @GetMapping("/allUsers") //fetch all the data
     public List<User> getAllUsers(){
