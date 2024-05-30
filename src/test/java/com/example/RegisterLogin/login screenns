@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Window</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .schedule-window {
+            width: 300px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .schedule-header {
+            padding: 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .buttons button {
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+            transform: scale(1.2);
+        }
+        .calendar {
+            padding: 10px;
+        }
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th, .calendar td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .calendar th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .orange-button {
+            background-color: orange;
+            color: white;
+        }
+        .orange-button:hover {
+            background-color: darkorange;
+            transform: scale(1.2);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .nav-buttons button {
+            background-color: #007BFF;
+            color: white;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .nav-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="schedule-window">
+        <div class="schedule-header">
+            <h2>Bharath's Schedule</h2>
+        </div>
+        <div class="buttons">
+            <button onclick="showMonthly()">Monthly</button>
+            <button onclick="showWeekly()">Weekly</button>
+            <button onclick="showDaily()">Daily</button>
+        </div>
+        <div id="content" class="calendar"></div>
+    </div>
+
+    <script>
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function showMonthly() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = generateCalendar(currentMonth, currentYear);
+        }
+
+        function generateCalendar(month, year) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const date = new Date(year, month, 1);
+            const firstDay = date.getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            let calendarHtml = `<div class="nav-buttons">
+                <button onclick="prevMonth()">&#9664;</button>
+                <span>${monthNames[month]} ${year}</span>
+                <button onclick="nextMonth()">&#9654;</button>
+            </div>`;
+            calendarHtml += '<table>';
+            calendarHtml += '<tr>';
+            for (let day of days) {
+                calendarHtml += `<th>${day}</th>`;
+            }
+            calendarHtml += '</tr><tr>';
+
+            for (let i = 0; i < firstDay; i++) {
+                calendarHtml += '<td></td>';
+            }
+
+            for (let date = 1; date <= lastDate; date++) {
+                if ((date + firstDay - 1) % 7 === 0 && date !== 1) {
+                    calendarHtml += '</tr><tr>';
+                }
+                calendarHtml += `<td>${date}</td>`;
+            }
+
+            calendarHtml += '</tr></table>';
+            return calendarHtml;
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            showMonthly();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            showMonthly();
+        }
+
+        function showWeekly() {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            let weeklyHtml = '<div class="buttons">';
+            for (let day of days) {
+                if (day !== 'Saturday' && day !== 'Sunday') {
+                    weeklyHtml += `<button class="orange-button">${day}</button>`;
+                } else {
+                    weeklyHtml += `<button>${day}</button>`;
+                }
+            }
+            weeklyHtml += '</div>';
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = weeklyHtml;
+        }
+
+        function showDaily() {
+            const activities = ['School', 'Sports', 'Hobby', 'Homework', 'Leisure', 'Community Service'];
+            let dailyHtml = '<div class="buttons">';
+            for (let activity of activities) {
+                dailyHtml += `<button>${activity}</button>`;
+            }
+            dailyHtml += '</div>';
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = dailyHtml;
+        }
+
+        window.onload = showMonthly; // Display the monthly calendar by default when the page loads
+    </script>
+
+</body>
+</html>
